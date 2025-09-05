@@ -1,0 +1,13 @@
+scalar Time
+
+type Service {
+  name: String!
+  status: String!
+  latencyMs: Float!
+  errorRate: Float!
+}
+
+type Query {
+  services: [Service!]!
+  service(name: String!): Service
+}
