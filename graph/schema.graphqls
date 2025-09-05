@@ -5,6 +5,10 @@ type Service {
   status: String!
   latencyMs: Float!
   errorRate: Float!
+  cpuUsage: Float!      # percentage
+  memoryUsage: Float!   # MB
+  uptime: Int!          # sec
+  requestRate: Int!     # req/sec
 }
 
 type Query {

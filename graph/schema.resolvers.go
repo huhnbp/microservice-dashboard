@@ -6,37 +6,27 @@ package graph
 
 import (
 	"context"
-	"math/rand"
 
 	"github.com/huhnbp/microservice-dashboard/graph/model"
+	svc "github.com/huhnbp/microservice-dashboard/internal/services"
 )
-
-var services = []model.Service{
-	{Name: "auth", Status: "OK"},
-	{Name: "payments", Status: "OK"},
-	{Name: "checkout", Status: "OK"},
-}
 
 // Services is the resolver for the services field.
 func (r *queryResolver) Services(ctx context.Context) ([]*model.Service, error) {
-	for i := range services {
-		services[i].LatencyMs = rand.Float64()*500 + 50
-		services[i].ErrorRate = rand.Float64() * 0.05
-	}
-	result := make([]*model.Service, len(services))
-	for i := range services {
-		result[i] = &services[i]
+	result := make([]*model.Service, len(svc.Services))
+	for i := range svc.Services {
+		svc.GetDummyMetrics(&svc.Services[i])
+		result[i] = &svc.Services[i]
 	}
 	return result, nil
 }
 
 // Service is the resolver for the service field.
 func (r *queryResolver) Service(ctx context.Context, name string) (*model.Service, error) {
-	for i := range services {
-		if services[i].Name == name {
-			services[i].LatencyMs = rand.Float64()*500 + 50
-			services[i].ErrorRate = rand.Float64() * 0.05
-			return &services[i], nil
+	for i := range svc.Services {
+		if svc.Services[i].Name == name {
+			svc.GetDummyMetrics(&svc.Services[i])
+			return &svc.Services[i], nil
 		}
 	}
 	return nil, nil
@@ -46,20 +36,3 @@ func (r *queryResolver) Service(ctx context.Context, name string) (*model.Servic
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-/*
-	func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
-}
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
-}
-func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
-type mutationResolver struct{ *Resolver }
-*/

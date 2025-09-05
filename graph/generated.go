@@ -52,10 +52,14 @@ type ComplexityRoot struct {
 	}
 
 	Service struct {
-		ErrorRate func(childComplexity int) int
-		LatencyMs func(childComplexity int) int
-		Name      func(childComplexity int) int
-		Status    func(childComplexity int) int
+		CPUUsage    func(childComplexity int) int
+		ErrorRate   func(childComplexity int) int
+		LatencyMs   func(childComplexity int) int
+		MemoryUsage func(childComplexity int) int
+		Name        func(childComplexity int) int
+		RequestRate func(childComplexity int) int
+		Status      func(childComplexity int) int
+		Uptime      func(childComplexity int) int
 	}
 }
 
@@ -102,6 +106,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Query.Services(childComplexity), true
 
+	case "Service.cpuUsage":
+		if e.complexity.Service.CPUUsage == nil {
+			break
+		}
+
+		return e.complexity.Service.CPUUsage(childComplexity), true
+
 	case "Service.errorRate":
 		if e.complexity.Service.ErrorRate == nil {
 			break
@@ -116,6 +127,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Service.LatencyMs(childComplexity), true
 
+	case "Service.memoryUsage":
+		if e.complexity.Service.MemoryUsage == nil {
+			break
+		}
+
+		return e.complexity.Service.MemoryUsage(childComplexity), true
+
 	case "Service.name":
 		if e.complexity.Service.Name == nil {
 			break
@@ -123,12 +141,26 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Service.Name(childComplexity), true
 
+	case "Service.requestRate":
+		if e.complexity.Service.RequestRate == nil {
+			break
+		}
+
+		return e.complexity.Service.RequestRate(childComplexity), true
+
 	case "Service.status":
 		if e.complexity.Service.Status == nil {
 			break
 		}
 
 		return e.complexity.Service.Status(childComplexity), true
+
+	case "Service.uptime":
+		if e.complexity.Service.Uptime == nil {
+			break
+		}
+
+		return e.complexity.Service.Uptime(childComplexity), true
 
 	}
 	return 0, false
@@ -340,7 +372,7 @@ func (ec *executionContext) _Query_services(ctx context.Context, field graphql.C
 	}
 	res := resTmp.([]*model.Service)
 	fc.Result = res
-	return ec.marshalNService2ᚕᚖgihubᚗcomᚋhuhnbpᚋmicroserviceᚑdashboardᚋgraphᚋmodelᚐServiceᚄ(ctx, field.Selections, res)
+	return ec.marshalNService2ᚕᚖgithubᚗcomᚋhuhnbpᚋmicroserviceᚑdashboardᚋgraphᚋmodelᚐServiceᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_services(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -359,6 +391,14 @@ func (ec *executionContext) fieldContext_Query_services(_ context.Context, field
 				return ec.fieldContext_Service_latencyMs(ctx, field)
 			case "errorRate":
 				return ec.fieldContext_Service_errorRate(ctx, field)
+			case "cpuUsage":
+				return ec.fieldContext_Service_cpuUsage(ctx, field)
+			case "memoryUsage":
+				return ec.fieldContext_Service_memoryUsage(ctx, field)
+			case "uptime":
+				return ec.fieldContext_Service_uptime(ctx, field)
+			case "requestRate":
+				return ec.fieldContext_Service_requestRate(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Service", field.Name)
 		},
@@ -391,7 +431,7 @@ func (ec *executionContext) _Query_service(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.Service)
 	fc.Result = res
-	return ec.marshalOService2ᚖgihubᚗcomᚋhuhnbpᚋmicroserviceᚑdashboardᚋgraphᚋmodelᚐService(ctx, field.Selections, res)
+	return ec.marshalOService2ᚖgithubᚗcomᚋhuhnbpᚋmicroserviceᚑdashboardᚋgraphᚋmodelᚐService(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_service(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -410,6 +450,14 @@ func (ec *executionContext) fieldContext_Query_service(ctx context.Context, fiel
 				return ec.fieldContext_Service_latencyMs(ctx, field)
 			case "errorRate":
 				return ec.fieldContext_Service_errorRate(ctx, field)
+			case "cpuUsage":
+				return ec.fieldContext_Service_cpuUsage(ctx, field)
+			case "memoryUsage":
+				return ec.fieldContext_Service_memoryUsage(ctx, field)
+			case "uptime":
+				return ec.fieldContext_Service_uptime(ctx, field)
+			case "requestRate":
+				return ec.fieldContext_Service_requestRate(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Service", field.Name)
 		},
@@ -730,6 +778,182 @@ func (ec *executionContext) fieldContext_Service_errorRate(_ context.Context, fi
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Service_cpuUsage(ctx context.Context, field graphql.CollectedField, obj *model.Service) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Service_cpuUsage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CPUUsage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Service_cpuUsage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Service",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Service_memoryUsage(ctx context.Context, field graphql.CollectedField, obj *model.Service) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Service_memoryUsage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MemoryUsage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Service_memoryUsage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Service",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Service_uptime(ctx context.Context, field graphql.CollectedField, obj *model.Service) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Service_uptime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Uptime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	fc.Result = res
+	return ec.marshalNInt2int32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Service_uptime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Service",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Service_requestRate(ctx context.Context, field graphql.CollectedField, obj *model.Service) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Service_requestRate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RequestRate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	fc.Result = res
+	return ec.marshalNInt2int32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Service_requestRate(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Service",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2816,6 +3040,26 @@ func (ec *executionContext) _Service(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "cpuUsage":
+			out.Values[i] = ec._Service_cpuUsage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "memoryUsage":
+			out.Values[i] = ec._Service_memoryUsage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "uptime":
+			out.Values[i] = ec._Service_uptime(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "requestRate":
+			out.Values[i] = ec._Service_requestRate(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3206,7 +3450,23 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 	return graphql.WrapContextMarshaler(ctx, res)
 }
 
-func (ec *executionContext) marshalNService2ᚕᚖgihubᚗcomᚋhuhnbpᚋmicroserviceᚑdashboardᚋgraphᚋmodelᚐServiceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Service) graphql.Marshaler {
+func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v any) (int32, error) {
+	res, err := graphql.UnmarshalInt32(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.SelectionSet, v int32) graphql.Marshaler {
+	_ = sel
+	res := graphql.MarshalInt32(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) marshalNService2ᚕᚖgithubᚗcomᚋhuhnbpᚋmicroserviceᚑdashboardᚋgraphᚋmodelᚐServiceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Service) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3230,7 +3490,7 @@ func (ec *executionContext) marshalNService2ᚕᚖgihubᚗcomᚋhuhnbpᚋmicrose
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNService2ᚖgihubᚗcomᚋhuhnbpᚋmicroserviceᚑdashboardᚋgraphᚋmodelᚐService(ctx, sel, v[i])
+			ret[i] = ec.marshalNService2ᚖgithubᚗcomᚋhuhnbpᚋmicroserviceᚑdashboardᚋgraphᚋmodelᚐService(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3250,7 +3510,7 @@ func (ec *executionContext) marshalNService2ᚕᚖgihubᚗcomᚋhuhnbpᚋmicrose
 	return ret
 }
 
-func (ec *executionContext) marshalNService2ᚖgihubᚗcomᚋhuhnbpᚋmicroserviceᚑdashboardᚋgraphᚋmodelᚐService(ctx context.Context, sel ast.SelectionSet, v *model.Service) graphql.Marshaler {
+func (ec *executionContext) marshalNService2ᚖgithubᚗcomᚋhuhnbpᚋmicroserviceᚑdashboardᚋgraphᚋmodelᚐService(ctx context.Context, sel ast.SelectionSet, v *model.Service) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -3559,7 +3819,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOService2ᚖgihubᚗcomᚋhuhnbpᚋmicroserviceᚑdashboardᚋgraphᚋmodelᚐService(ctx context.Context, sel ast.SelectionSet, v *model.Service) graphql.Marshaler {
+func (ec *executionContext) marshalOService2ᚖgithubᚗcomᚋhuhnbpᚋmicroserviceᚑdashboardᚋgraphᚋmodelᚐService(ctx context.Context, sel ast.SelectionSet, v *model.Service) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

@@ -6,8 +6,12 @@ type Query struct {
 }
 
 type Service struct {
-	Name      string  `json:"name"`
-	Status    string  `json:"status"`
-	LatencyMs float64 `json:"latencyMs"`
-	ErrorRate float64 `json:"errorRate"`
+	Name        string  `json:"name"`
+	Status      string  `json:"status"`
+	LatencyMs   float64 `json:"latencyMs"`
+	ErrorRate   float64 `json:"errorRate"`
+	CPUUsage    float64 `json:"cpuUsage"`
+	MemoryUsage float64 `json:"memoryUsage"`
+	Uptime      int32   `json:"uptime"`
+	RequestRate int32   `json:"requestRate"`
 }
